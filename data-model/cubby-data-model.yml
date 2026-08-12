@@ -1,0 +1,340 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/
+description: >-
+  The Cubby entity graph, read from the endpoint families, the documented ID prefixes, the
+  expansion targets and the webhook entity reference. Cubby exposes its entities under prefixed
+  IDs of the form <prefix>_<alpha>, so the object domain is unusually legible for an API with no
+  published schema. DERIVED FROM THE PUBLISHED REFERENCE, not from an OpenAPI — Cubby publishes
+  no machine-readable spec, so relationships below are read from documented fields and expansions
+  rather than from $ref links, and confidence is noted where the docs are indirect.
+id_scheme:
+  pattern: '<prefix>_<alpha>'
+  documented_prefixes:
+  - prefix: org_
+    entity: Organization
+    example: org_Ji9JKfKkhuR
+  - prefix: fac_
+    entity: Facility
+    example: fac_C7bSZyPT6fp
+  - prefix: unit_
+    entity: Unit
+    example: unit_GfNkzV4itfk
+  - prefix: pg_
+    entity: Pricing Group
+    example: pg_4a2da7d271a
+  - prefix: cust_
+    entity: Customer
+    example: cust_FiUtBj8JkF
+  - prefix: lease_
+    entity: Lease
+    example: lease_jOi8joH3Hu
+  - prefix: lead_
+    entity: Lead
+    example: lead_Hj8JkFiUtB
+  - prefix: quote_
+    entity: Quote
+    example: quote_IJf03jNjKuf
+entities:
+- name: Organization
+  endpoints:
+  - POST /v1/organizations/search
+  description: The tenancy root. API credentials attach to an Organization and see everything
+    visible to it.
+  relationships:
+  - has_many: Facility
+    via: organizationId
+  - has_many: Manager
+  - has_many: FacilityGroup
+- name: FacilityGroup
+  endpoints:
+  - POST /v1/facility-groups/search
+  added: '2026-06'
+  relationships:
+  - has_many: Facility
+- name: Facility
+  endpoints:
+  - POST /v1/facilities/search
+  fields_documented:
+  - timeZone
+  - schedules (expansion)
+  relationships:
+  - belongs_to: Organization
+    via: organizationId
+  - has_many: Unit
+    via: facilityId
+  - has_many: PricingGroup
+    via: facilityId
+  - has_many: Lease
+    via: facilityId
+  - has_many: AccessCode
+  note: >-
+    Facility carries the timezone that gives suffix-less timestamps their meaning across the
+    whole API — it is the semantic anchor of the date/time convention.
+- name: Unit
+  endpoints:
+  - POST /v1/units/search
+  - POST /v1/units/set-rentability
+  fields_documented:
+  - legacyId
+  - walkthroughOrder
+  - rentability
+  relationships:
+  - belongs_to: Facility
+    via: facilityId
+  - belongs_to: PricingGroup
+    via: pricingGroupId
+  - has_one: Lease
+    via: unitId
+    cardinality_note: one active lease at a time
+  - has_many: Lock
+- name: PricingGroup
+  endpoints:
+  - POST /v1/pricing-groups/search
+  - POST /v1/pricing-groups/change-rates
+  - POST /v1/pricing-groups/find-unit-for-tier
+  - POST /v1/storefront/pricing-groups/search
+  fields_documented:
+  - valuePricingStatus (NOT_CONFIGURED | REVIEW_REQUIRED | APPROVED)
+  - availableTiers (LOWEST | MEDIUM | HIGHEST)
+  - strikethroughRate
+  relationships:
+  - belongs_to: Facility
+    via: facilityId
+  - has_many: Unit
+  - has_many: Discount
+    via: pricingGroups
+  - has_one: ValuePricingStrategy
+- name: ValuePricingStrategy
+  endpoints:
+  - POST /v1/value-pricing-strategies/search
+  added: '2026-05'
+- name: Discount
+  endpoints:
+  - POST /v1/discounts/search
+  fields_documented:
+  - applicationPercentage
+  - applicationAmount (deprecated for percentage discounts)
+  - pricingGroups
+  relationships:
+  - belongs_to_many: PricingGroup
+- name: Customer
+  endpoints:
+  - POST /v1/customers/search
+  - POST /v1/customers/update
+  pii: true
+  fields_documented:
+  - name / firstName / lastName
+  - companyName
+  - military
+  - contact (email, phone, address, address2, city)
+  relationships:
+  - has_many: Lease
+    via: customerId
+  - has_many: Lead
+    via: customerId
+  - has_many: PaymentMethod
+  - has_many: AlternativeContact
+- name: Lead
+  endpoints:
+  - POST /v1/leads/search
+  - POST /v1/leads/create
+  - POST /v1/leads/update
+  fields_documented:
+  - source (WEBSITE | WALK_IN | CALL | CONTACT_FORM | ABANDONED_CHECKOUT | FAILED_CHECKOUT |
+    RESERVED_CHECKOUT | SMS_MESSAGE | WAITLIST_FORM | RESERVATION_FORM | REFERRAL | SEARCH_ENGINE
+    | DIGITAL_AD | BILLBOARD | PHYSICAL_AD | AI_VOICE_AGENT | SPAREFOOT | OTHER)
+  - status (NEW | ON_HOLD | IN_PROGRESS_HOT | IN_PROGRESS_COLD | CONVERTED | UNQUALIFIED |
+    DUPLICATE | RESERVATION)
+  - origin (MANAGER | API | AI_VOICE_AGENT | CONTACT_FORM | WAITLIST_FORM | RESERVATION_FORM |
+    WEBSITE_CHECKOUT)
+  - targetMoveInDate
+  - customSource
+  relationships:
+  - belongs_to: Customer
+    via: customerId
+  - belongs_to: Facility
+    via: facilityId
+  - belongs_to: PricingGroup
+    via: pricingGroupId
+  - converts_to: Lease
+- name: Lease
+  endpoints:
+  - POST /v1/leases/search
+  - POST /v1/leases/create
+  - POST /v1/leases/checkout
+  - POST /v1/leases/cancel-lease
+  - POST /v1/leases/schedule-move-out
+  - POST /v1/leases/preview-charges
+  - POST /v1/leases/get-move-in-charges
+  - POST /v1/leases/get-upsells
+  - POST /v1/leases/make-payment
+  - POST /v1/leases/get-payment-link
+  - POST /v1/leases/get-documents-link
+  - POST /v1/leases/enable-auto-pay
+  - POST /v1/leases/disable-auto-pay
+  - POST /v1/leases/change-rents
+  - POST /v1/leases/cancel-rent-changes
+  - POST /v1/leases/get-rent-change-schedules
+  - POST /v1/leases/get-compliances
+  - POST /v1/leases/update-alternative-contacts
+  description: The central aggregate. 17 of the ~70 documented operations act on it.
+  relationships:
+  - belongs_to: Customer
+    via: customerId
+  - belongs_to: Unit
+    via: unitId
+  - belongs_to: Facility
+    via: facilityId
+  - has_one: Balances
+  - has_many: Ledger
+  - has_many: Payment
+  - has_one: Coverage
+  - has_many: RentChangeSchedule
+  - has_many: Note
+  - has_one: Auction
+    condition: on delinquency
+- name: Balances
+  description: Lease balance rollup carried inline on lease payloads and webhooks.
+  relationships:
+  - belongs_to: Lease
+- name: PaymentMethod
+  endpoints:
+  - POST /v1/payment-methods/search
+  - POST /v1/payment-methods/create
+  relationships:
+  - belongs_to: Customer
+    via: customerId
+  - used_by: Lease
+    via: AutoPay enrolment
+- name: Payment
+  endpoints:
+  - POST /v1/payments/search
+  fields_documented:
+  - status (NEW | INITIATED | PENDING | APPROVED | DECLINED | ERROR | FAILED | VOIDED |
+    CANCELING | VOIDING)
+  - payabliStatus
+  - transactionId
+  relationships:
+  - belongs_to: Lease
+  - belongs_to: PaymentMethod
+- name: Ledger
+  endpoints:
+  - POST /v1/ledgers/search
+  fields_documented:
+  - waive
+  - paymentTime
+  relationships:
+  - belongs_to: Lease
+- name: Coverage
+  endpoints:
+  - POST /v1/coverage/search
+  - POST /v1/coverage/enroll
+  - POST /v1/coverage/unenroll
+  - POST /v1/coverage/add-private-policy
+  - POST /v1/coverage/remove-private-policy
+  - POST /v1/coverage/download-private-policy
+  - POST /v1/coverage-levels/search
+  relationships:
+  - belongs_to: Lease
+  - has_one: CoverageProgram
+    via: coverageProgram expansion
+  - has_one: CoverageLevel
+- name: Auction
+  endpoints:
+  - POST /v1/auctions/search
+  - POST /v1/auctions/create
+  - POST /v1/auctions/start-lien
+  - POST /v1/auctions/cancel-lien
+  fields_documented:
+  - leaseConfigurationId
+  relationships:
+  - belongs_to: Lease
+  - belongs_to: Unit
+- name: AccessCode
+  endpoints:
+  - POST /v1/access-codes/search
+  - POST /v1/access-codes/check
+  relationships:
+  - belongs_to: Facility
+  - belongs_to: Customer
+- name: Lock
+  endpoints:
+  - POST /v1/locks/search
+  - POST /v1/locks/register
+  - POST /v1/locks/attach
+  - POST /v1/locks/transfer
+  - POST /v1/locks/return
+  - POST /v1/locks/disable
+  relationships:
+  - belongs_to: Unit
+  - belongs_to: Facility
+- name: Manager
+  endpoints:
+  - POST /v1/managers/search
+  relationships:
+  - belongs_to: Organization
+- name: Note
+  endpoints:
+  - POST /v1/notes/search
+  - POST /v1/notes/create
+  relationships:
+  - belongs_to: Lease
+  - belongs_to: Customer
+- name: Task
+  endpoints:
+  - POST /v1/tasks/search
+  - POST /v1/tasks/create
+  relationships:
+  - belongs_to: Facility
+- name: Message
+  endpoints:
+  - POST /v1/messages/email/send
+  - POST /v1/messages/sms/send
+  constraints:
+  - email subject max 255 characters
+  - email body max 256 KB (262,144 characters)
+  relationships:
+  - belongs_to: Customer
+    via: customerId
+  - belongs_to: Facility
+    via: facilityId
+reports:
+  description: >-
+    Report endpoints are projections over the graph rather than entities in it.
+  endpoints:
+  - POST /v1/reports/rent-roll
+  - POST /v1/reports/aged-receivables
+  - POST /v1/reports/general-ledger/cash
+  - POST /v1/reports/general-ledger/accrual
+  - POST /v1/reports/merchant-services-disbursements
+analytics_warehouse:
+  published: true
+  platform: BigQuery
+  dataset: analytics
+  url: https://cubbystorage.github.io/docs/data-dictionary/
+  description: >-
+    Cubby also publishes a data-warehouse dictionary — the analytics BigQuery dataset mirrors the
+    operational data (facilities, units, leases, contacts, payments, communications), denormalized
+    with descriptive columns and foreign keys, plus an interactive schema diagram.
+  refresh:
+    most_tables: hourly
+    daily:
+    - spaces_historical
+    - ga_events
+  note: >-
+    The table/column list is loaded client-side from a JSON payload the page fetches at runtime,
+    so individual table names beyond the two named above were not captured in this pass. The
+    warehouse is a second, materially different read surface from the Operator API and is worth
+    a dedicated harvest.
+expansions:
+  style: out-of-line auxiliary arrays keyed by embedded entity IDs
+  documented_examples:
+  - pricingGroup (on Leases Search, added 2025-10)
+  - schedules (on Facilities Search, added 2026-06)
+  - coverageProgram (on Coverage)
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200
+  operations_read: 70

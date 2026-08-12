@@ -1,0 +1,39 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/
+limit_count: 0
+note: >-
+  CUBBY DOCUMENTS NO RATE LIMITS. The full API reference was read and searched for "rate limit",
+  "429", "Retry-After", "X-RateLimit" and "RateLimit" — no match. The Introduction covers the
+  response envelope, errors, IDs, money, date/time, expansions, authentication, PII and roles,
+  and never mentions throttling. The documented error statuses are 400, 401, 403, 404 and 500;
+  429 is not among them. An integrator therefore has no published budget, no documented
+  exhaustion behaviour, and no runtime signal to back off on — which matters more than usual
+  here because every operation including reads is a POST, so nothing is cacheable and polling
+  via updatedAfter cursors is the sanctioned sync pattern.
+limits: []
+response_headers:
+  documented: []
+  observed:
+  - name: x-cloud-trace-context
+    note: >-
+      Emitted by the Google Frontend on api.cubbystorage.com responses. A trace ID, not a
+      rate-limit signal, and not documented as client-facing.
+  retry_after: not documented
+  status_on_exhaustion: not documented
+quotas:
+  documented_constraints:
+  - scope: POST /v1/messages/email/send
+    constraint: subject max 255 characters; body max 256 KB (262,144 characters)
+    note: >-
+      Payload size constraints, not rate limits. Recorded because they are the only published
+      usage bounds on the API.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://cubbystorage.github.io/docs/api/
+    http_status: 200
+    result: no rate-limit, 429, Retry-After or RateLimit-* mention in 11,052 lines of reference text
+  - url: https://api.cubbystorage.com/v1
+    http_status: 404
+    result: no rate-limit headers on an unauthenticated response

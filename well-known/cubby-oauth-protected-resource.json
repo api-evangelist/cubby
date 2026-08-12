@@ -1,0 +1,1 @@
+{"authorization_servers":["https://api.cubbystorage.com"],"scopes_supported":["mcp"],"resource":"https://api.cubbystorage.com","bearer_methods_supported":["header"]}

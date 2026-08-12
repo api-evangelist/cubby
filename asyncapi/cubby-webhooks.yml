@@ -1,0 +1,105 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/make-webhooks/
+description: >-
+  Cubby ships an outbound webhook surface, documented as a dedicated section of its developer
+  docs. Six event types fire on the lease lifecycle. NO AsyncAPI DOCUMENT IS PUBLISHED — the
+  catalog below is captured from the provider's own reference, not converted into a spec we
+  authored. The surface is real but narrow in two ways worth recording: subscriptions are
+  configured by Cubby staff on request rather than by the integrator, and the documentation
+  frames delivery entirely in terms of Make.com scenarios rather than as a general webhook API.
+asyncapi_published: false
+webhooks:
+  transport: HTTP POST with a JSON body
+  subscription_model: >-
+    "Each webhook URL is registered per event type in Cubby's server configuration." There is no
+    self-service subscription endpoint. "To enable Make.com webhooks for your organization,
+    contact support@cubbystorage.com."
+  self_service: false
+  delivery_semantics: >-
+    "Cubby will attempt delivery and will log a failure to our error tracker if the webhook URL
+    does not respond with HTTP 200." No retry policy, no backoff schedule, no dead-letter
+    behaviour and no at-least-once/at-most-once guarantee is stated.
+  retries: not documented
+  signing:
+    supported: false
+    note: >-
+      No HMAC signature header, no shared secret, no mTLS and no timestamp/replay protection is
+      documented. A receiver has no published way to verify a payload originated from Cubby.
+      Payloads carry PII (tenant names, addresses, phone numbers, email) and lease balances.
+  ordering: not documented
+  routing:
+    field: topicId
+    description: >-
+      "Each webhook payload includes a topicId field. This is a free-form string set at the
+      organization level in Cubby. You can use it inside Make.com to route events coming into a
+      single webhook URL to different branches of a scenario — for example if you operate
+      multiple brands or organizations."
+  event_count: 6
+  events:
+  - name: Online Lead Created
+    trigger: a new lead inquiry is created online
+    payload_root:
+    - topicId
+    - lead
+    - customer
+  - name: Move In
+    trigger: a tenant moves in (lease created and activated)
+    payload_root:
+    - topicId
+    - customer
+    - lease
+    - unit
+    - facility
+    - pricingGroup
+  - name: Move Out
+    trigger: a tenant moves out
+    payload_root:
+    - topicId
+    - customer
+    - lease
+    - unit
+    - facility
+  - name: Lease Documents Completed
+    trigger: lease documents are signed and completed
+  - name: Auction Scheduled
+    trigger: a delinquent unit's auction is scheduled
+  - name: Tenant Overlocked
+    trigger: a tenant is overlocked for delinquency
+  entity_reference:
+    description: >-
+      The webhook docs carry a shared entity reference used across payloads, so payload shapes
+      are documented at field level.
+    entities:
+    - Customer
+    - Lead
+    - Lease
+    - Unit
+    - Facility
+    - Pricing Group
+    - Discount
+    - Balances
+  conventions:
+    ids: '<prefix>_<alpha>, the same scheme as the Operator API (cust_, lease_, fac_, pg_, unit_, lead_)'
+    money: integer cents
+    date_time: ISO-8601; Z means UTC, no suffix means facility-local
+integration:
+  make_com:
+    app: https://www.make.com/en/integrations (Cubby app, linked from the docs as "install the
+      Make.com Cubby app Here")
+    walkthrough: video linked from the docs
+    note: >-
+      The entire webhook surface is documented as a Make.com integration guide. A consumer that
+      is not using Make.com can still receive the POSTs — nothing in the payload is Make-specific
+      — but Cubby does not document it as a standalone webhook API.
+gaps:
+- No AsyncAPI document published.
+- No payload signing or verification mechanism documented.
+- No self-service subscription management; every endpoint registration goes through support.
+- No retry, backoff or replay/redelivery policy.
+- Six events cover move-in, move-out, leads, documents, auction and overlock — no events for
+  payments, rent changes, coverage or task/note activity, all of which the REST API supports.
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/make-webhooks/
+  http_status: 200

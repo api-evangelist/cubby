@@ -1,0 +1,87 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/
+description: >-
+  Cubby's lifecycle posture is carried almost entirely by one artifact — the dated changelog
+  inside its API reference. Versioning is a v1 path prefix that has never been incremented.
+  Deprecations are announced there with a named removal month. There is no status page, no
+  published SLA, and no Deprecation/Sunset response headers.
+versioning:
+  scheme: path
+  current: v1
+  base_url: https://api.cubbystorage.com/v1
+  version_history:
+  - version: v1
+    first_documented: '2024-12'
+    status: current
+  header_versioning: false
+  date_versioning: false
+  note: >-
+    A single major version since the changelog begins in December 2024. All change has been
+    additive-in-place — new endpoints and new response fields shipped into v1 rather than a new
+    version.
+deprecation:
+  policy_page: null
+  policy_published: false
+  practice: documented-in-changelog
+  headers:
+    deprecation: not implemented
+    sunset: not implemented
+    rfc8594: false
+  description: >-
+    Cubby does deprecate in public and does name a removal date, but there is no standalone
+    deprecation policy page and no machine-readable signal on the wire. The evidence is the
+    June 2026 changelog entry: the applicationAmount value for percentage discounts "is
+    deprecated and scheduled for removal in mid-July 2026". Deprecated response fields are also
+    marked inline in the reference with a replacement named.
+  notice_period: >-
+    Approximately one month in the one dated case published (announced June 2026, removal
+    mid-July 2026).
+  deprecated_items:
+  - item: applicationAmount (for percentage discounts)
+    announced: '2026-06'
+    removal: '2026-07 (mid-July)'
+    replacement: applicationPercentage
+  - item: unit-level pricing group field
+    replacement: pricingGroupId
+    note: marked "Deprecated. Use pricingGroupId" inline in the reference
+  - item: coverage provider field
+    replacement: provider from the coverageProgram expansion
+  - item: coverage policyNumber field
+    replacement: policyNumber from the coverageProgram expansion
+  - item: coverage-levels search legacy behaviour
+    note: >-
+      a legacy request shape "is deprecated but still supported; it returns the union of
+      coverage levels"
+  breaking_changes_shipped_without_deprecation:
+  - item: 'POST /v1/managers/search phone filter'
+    date: '2026-08'
+    description: >-
+      Normalised to E.164 and matched exactly; partial-number search is no longer supported and
+      a non-full number is now rejected with 400. Shipped as a changelog note, not a deprecation
+      with a notice period.
+status_page:
+  published: false
+  probed:
+  - url: https://status.cubbystorage.com/
+    result: DNS does not resolve
+  note: >-
+    No status page found on any expected host and none linked from the site, docs or help centre.
+    No StatusPage pointer is emitted.
+sla:
+  published: false
+  note: >-
+    No public uptime or support SLA. Commercial terms sit in the Master Services Agreement and
+    the API Terms of Service, both of which reference an Order rather than publishing figures.
+support:
+  api_contact: support@cubbystorage.com
+  help_center: https://help.cubbystorage.com/en/
+changelog: changelog/cubby-changelog.yml
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://cubbystorage.github.io/docs/api/
+    http_status: 200
+  - url: https://status.cubbystorage.com/
+    http_status: 0
+    note: DNS NXDOMAIN

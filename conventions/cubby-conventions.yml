@@ -1,0 +1,160 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#introduction
+description: >-
+  Cubby's cross-cutting API semantics, read from the Introduction of its public API
+  reference. The design is deliberate and unusually well stated: an action-oriented JSON
+  HTTP API that explicitly declines to be RESTful, with a uniform response envelope,
+  integer-cents money, prefixed entity IDs, two-flavoured ISO-8601 timestamps, out-of-line
+  expansions, and cursor filters designed for incremental sync. The notable absences are
+  idempotency, rate-limit signalling and request-ID tracing.
+style:
+  paradigm: action-oriented JSON HTTP (RPC-over-HTTP)
+  self_description: >-
+    "This is a JSON HTTP API. It is not a RESTful API. In contrast to REST, which is focused
+    on the transfer of state between server and client, this API is oriented around actions
+    that can be performed on system entities."
+  http_methods:
+  - POST
+  note: >-
+    Every one of the ~70 documented operations is a POST, including reads. Endpoints are
+    named <resource>/<verb> — facilities/search, leases/checkout, locks/transfer,
+    auctions/start-lien. Caching, conditional requests and safe-method retry semantics are
+    therefore not available to a client.
+authentication:
+  style: bearer API key in the Authorization header
+  see: authentication/cubby-authentication.yml
+response_envelope:
+  success:
+    shape: '{"status": 200, "data": { ... }}'
+    fields:
+    - name: status
+      description: always 200 on success; mirrors the HTTP status
+    - name: data
+      description: >-
+        endpoint-specific payload; omitted entirely for endpoints with nothing to return,
+        in which case the body is just {"status": 200}
+  error:
+    shape: '{"code": 404, "errors": ["Facility not found"]}'
+    fields:
+    - name: code
+      description: mirrors the HTTP status code
+    - name: errors
+      description: one or more plain-English strings describing what went wrong
+    rfc9457: false
+    note: >-
+      Errors are plain-English strings, not stable machine-readable codes. A client cannot
+      branch on an error identity — only on the HTTP status. See errors/cubby-problem-types.yml.
+identifiers:
+  scheme: '<prefix>_<alpha>'
+  description: >-
+    "Entity IDs in Cubby are generally in the form of <prefix>_<alpha> where the type of the
+    object referred to is defined by the prefix."
+  examples:
+  - cust_FiUtBj8JkF
+  - lease_jOi8joH3Hu
+  - org_Ji9JKfKkhuR
+  - quote_IJf03jNjKuf
+  - fac_C7bSZyPT6fp
+  - pg_4a2da7d271a
+  - unit_GfNkzV4itfk
+  - lead_Hj8JkFiUtB
+money:
+  representation: integer
+  unit: cents
+  rationale: >-
+    "We represent money as an integer, representing the number of cents. ... We believe use
+    of integers results in more predictable and obvious behavior for users of our API, and
+    forces anyone that sends us money to confront a possible loss of precision before sending
+    us numbers."
+date_time:
+  format: ISO-8601
+  date_only:
+    format: yyyy-MM-dd
+    examples:
+    - moveInDate
+    - accruesOn
+    - dueDate
+  timestamps:
+    utc: values ending in Z are UTC (2024-03-01T12:00:00.000000Z)
+    facility_local: >-
+      values with no timezone suffix are in the time zone of the facility the value belongs to
+      (2024-03-01T12:00:00 on an America/New_York facility record)
+    note: >-
+      The same field family carries two different zone semantics distinguished only by the
+      presence of a Z. This is documented clearly but is a real integration hazard.
+range_filter_semantics:
+  inclusive:
+    suffixes:
+    - '*OnOrAfter'
+    - '*OnOrBefore'
+    use: date-only filters describing business state on a calendar day (activeOnOrAfter on
+      Leases Search)
+  exclusive:
+    suffixes:
+    - '*After'
+    - '*Before'
+    use: >-
+      UTC timestamp filters intended as incremental-sync cursors — updatedAfter returns records
+      whose updatedAt is strictly later than the supplied timestamp, so passing the previous
+      response's timestamp excludes the boundary record on the next poll
+  note: >-
+    Explicit bound semantics encoded in the parameter name is a genuinely good convention and
+    rarer than it should be.
+incremental_sync:
+  supported: true
+  mechanism: updatedAfter / updatedBefore filters on search endpoints
+  added: '2026-05'
+  note: Polling-based. There is no change-feed, and webhooks cover only six lifecycle events.
+expansions:
+  supported: true
+  style: out-of-line
+  description: >-
+    "Expansions are not expanded in-line, but are provided as auxiliary arrays which can easily
+    be combined by using the embedded entity IDs."
+  note: >-
+    Sparse fieldsets are not offered; expansions only add related entities, they do not trim
+    the base entity.
+pagination:
+  documented: false
+  note: >-
+    The Introduction does not describe a pagination model, and no page/cursor/limit convention
+    is stated for the search endpoints. This is a documented gap, not an observed absence.
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    NOT SUPPORTED AS FAR AS THE PUBLIC DOCS GO. No Idempotency-Key header, no idempotent-retry
+    guidance, and no request-deduplication window is documented anywhere in the reference —
+    despite POST-only semantics on money-moving operations (leases/checkout, leases/make-payment,
+    payment-methods/create). The documented failure behaviour is compensating rather than
+    idempotent: on a declined move-in payment "the lease is rolled back". A client that times out
+    on checkout has no safe retry. This is the single highest-value gap on Cubby's profile and
+    is why no `Idempotency` pointer is emitted in apis.yml.
+rate_limiting:
+  documented: false
+  headers: []
+  see: rate-limits/cubby-rate-limits.yml
+request_tracing:
+  request_id_header: null
+  documented: false
+  note: >-
+    No X-Request-Id / correlation-ID convention documented. The API host does emit a Google Cloud
+    x-cloud-trace-context header on responses (observed on a 401 from /mcp), but it is not
+    documented as a supported client-facing trace identifier.
+versioning:
+  style: path
+  current: v1
+  base: https://api.cubbystorage.com/v1
+  see: lifecycle/cubby-lifecycle.yml
+cross_links:
+  errors: errors/cubby-problem-types.yml
+  decline_codes: errors/cubby-decline-codes.yml
+  authentication: authentication/cubby-authentication.yml
+  lifecycle: lifecycle/cubby-lifecycle.yml
+  rate_limits: rate-limits/cubby-rate-limits.yml
+  data_model: data-model/cubby-data-model.yml
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200

@@ -1,0 +1,146 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/
+description: >-
+  Request and response examples captured verbatim from Cubby's public developer documentation.
+  Cubby's reference is example-dense — every endpoint carries a sample request and response in a
+  right-hand code column, which is the Slate layout's main strength. These are the provider's own
+  published examples, transcribed unchanged; nothing here is authored by API Evangelist.
+example_count: 5
+examples:
+- id: response-envelope
+  title: Success envelope
+  operation: any
+  kind: response
+  media_type: application/json
+  body: |
+    {
+      "status": 200,
+      "data": {
+        /* Endpoint-specific payload. See each endpoint's documentation. */
+      }
+    }
+  note: >-
+    For endpoints with no payload to return the body is just {"status": 200}.
+- id: error-envelope
+  title: Error response
+  operation: any
+  kind: response
+  media_type: application/json
+  http_status: 404
+  body: |
+    {
+      "code": 404,
+      "errors": ["Facility not found"]
+    }
+- id: authenticated-request
+  title: Authenticated request
+  operation: POST /v1/organizations/search
+  kind: request
+  body: |
+    curl -X 'POST' https://api.cubbystorage.com/v1/organizations/search \
+      -H 'accept: */*' \
+      -H 'Authorization: Bearer <your-api-key>' \
+      -H 'Content-Type: application/json' \
+      -d '{"where": {}}'
+  note: >-
+    Transcribed from the docs with the published example bearer token replaced by a placeholder.
+    The documented `{"where": {}}` body is the search-endpoint request shape.
+- id: entity-ids
+  title: Entity ID prefixes
+  kind: reference
+  body: |
+    cust_FiUtBj8JkF
+    lease_jOi8joH3Hu
+    org_Ji9JKfKkhuR
+    quote_IJf03jNjKuf
+- id: webhook-online-lead-created
+  title: Online Lead Created webhook payload
+  source_url: https://cubbystorage.github.io/docs/make-webhooks/
+  kind: event
+  media_type: application/json
+  body: |
+    {
+      "topicId": "your-topic-id",
+      "lead": {
+        "leadId": "lead_Hj8JkFiUtB",
+        "createdAt": "2024-06-01T14:23:00.000000Z",
+        "updatedAt": "2024-06-01T14:23:00.000000Z",
+        "customerId": "cust_FiUtBj8JkF",
+        "source": "WEBSITE | WALK_IN | CALL | CONTACT_FORM | ABANDONED_CHECKOUT | FAILED_CHECKOUT | RESERVED_CHECKOUT | SMS_MESSAGE | WAITLIST_FORM | RESERVATION_FORM | REFERRAL | SEARCH_ENGINE | DIGITAL_AD | BILLBOARD | PHYSICAL_AD | AI_VOICE_AGENT | SPAREFOOT | OTHER",
+        "customSource": "Google Ad Campaign",
+        "status": "NEW | ON_HOLD | IN_PROGRESS_HOT | IN_PROGRESS_COLD | CONVERTED | UNQUALIFIED | DUPLICATE | RESERVATION",
+        "facilityId": "fac_C7bSZyPT6fp",
+        "pricingGroupId": "pg_4a2da7d271a",
+        "message": "Looking for a 10x10 unit starting next month.",
+        "targetMoveInDate": "2024-07-01"
+      },
+      "customer": {
+        "customerId": "cust_FiUtBj8JkF",
+        "createdAt": "2024-06-01T14:23:00.000000Z",
+        "updatedAt": "2024-06-01T14:23:00.000000Z",
+        "name": "Jane Smith",
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "companyName": null,
+        "military": false,
+        "contact": {
+          "email": "jane@example.com",
+          "phone": "555-867-5309",
+          "address": "123 Main St",
+          "address2": null,
+          "city": "Springfield",
+          "state": "IL",
+          "zip": "62701",
+          "country": "US"
+        }
+      },
+      "facility": {
+        "facilityId": "fac_C7bSZyPT6fp",
+        "name": "Springfield Storage",
+        "contact": {
+          "address": "456 Oak Ave",
+          "city": "Springfield",
+          "state": "IL",
+          "zip": "62701",
+          "country": "US",
+          "phone": "555-555-0100",
+          "email": "springfield@example.com"
+        },
+        "organizationId": "org_Ji9JKfKkhuR"
+      },
+      "pricingGroup": {
+        "pricingGroupId": "pg_4a2da7d271a",
+        "facilityId": "fac_C7bSZyPT6fp",
+        "name": "10x10 Climate Controlled",
+        "width": 10,
+        "depth": 10,
+        "height": 8,
+        "vehicleStorage": false,
+        "parking": false,
+        "standardRate": 12500,
+        "webRate": 10900,
+        "availableUnits": 3,
+        "features": ["Climate Controlled", "Drive-up Access"]
+      },
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "phone": "555-867-5309",
+      "source": "WEBSITE",
+      "targetMoveInDate": "2024-07-01",
+      "facilityId": "fac_C7bSZyPT6fp",
+      "facilityName": "Springfield Storage",
+      "pricingGroupId": "pg_4a2da7d271a",
+      "pricingGroupName": "10x10 Climate Controlled"
+    }
+  note: >-
+    The flat trailing fields are documented as "included for backward compatibility. Prefer the
+    structured objects above for new integrations." — an explicit, in-payload deprecation signal
+    that is worth crediting. Rates are integer cents (12500 = $125.00).
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://cubbystorage.github.io/docs/api/
+    http_status: 200
+  - url: https://cubbystorage.github.io/docs/make-webhooks/
+    http_status: 200

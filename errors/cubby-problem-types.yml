@@ -1,0 +1,70 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#errors
+format: custom
+rfc9457: false
+description: >-
+  Cubby documents one error envelope for the whole Operator API and no error-code registry.
+  Failures return a standard non-2xx HTTP status with a body carrying the status again plus
+  an array of plain-English strings. There are no stable error identifiers, no type URIs and
+  no per-error remediation guidance, so a client can only branch on the HTTP status.
+envelope:
+  media_type: application/json
+  shape: '{"code": 404, "errors": ["Facility not found"]}'
+  fields:
+  - name: code
+    type: integer
+    description: mirrors the HTTP status code
+  - name: errors
+    type: array of string
+    description: one or more plain-English strings describing what went wrong
+  stable_codes: false
+  note: >-
+    The documented example error string is "Facility not found". Strings are prose and are not
+    declared stable, so matching on them is brittle by construction.
+statuses:
+- status: 400
+  title: Bad Request
+  meaning: >-
+    Request validation failed. Documented concretely for the August 2026 managers/search change,
+    where a phone filter value that is not a full E.164-normalisable number is rejected with 400.
+  remediation: Correct the request body against the endpoint's documented parameters.
+- status: 401
+  title: Unauthorized
+  meaning: Missing or invalid API key in the Authorization header.
+  remediation: >-
+    Present a valid `Authorization: Bearer <api-key>` header. Keys are issued by Cubby support.
+- status: 403
+  title: Forbidden
+  meaning: >-
+    The API key's role does not permit the endpoint or operation. Cubby issues each key with one
+    of eight named roles; the reference carries a per-role endpoint table.
+  remediation: Request a key with the appropriate role from support@cubbystorage.com.
+- status: 404
+  title: Not Found
+  meaning: The referenced entity does not exist or is not visible to the key's Organization.
+  remediation: Verify the prefixed entity ID and that it belongs to the authenticated Organization.
+- status: 500
+  title: Internal Server Error
+  meaning: Server-side failure.
+  remediation: >-
+    Not documented. Note that no idempotency mechanism exists, so blind retry of a money-moving
+    POST after a 500 is unsafe — see conventions/cubby-conventions.yml.
+silent_omission:
+  documented: true
+  description: >-
+    Not an error, but the closest thing to one an integrator will hit: when a key lacks the PII
+    entitlement, PII fields are silently skipped from responses rather than being rejected or
+    masked. A missing field is therefore ambiguous between "no value" and "not entitled".
+  fields_affected: 11
+  see: authentication/cubby-authentication.yml
+gaps:
+- No application-level error code registry — only HTTP statuses and prose strings.
+- Not RFC 9457 / application/problem+json.
+- No documented 409, 422 or 429 semantics; rate limiting is undocumented entirely.
+- No error type URIs, no per-error documentation anchors.
+- Payment failures use a separate enumerated vocabulary — see errors/cubby-decline-codes.yml.
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200

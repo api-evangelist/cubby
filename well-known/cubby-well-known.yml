@@ -1,0 +1,66 @@
+generated: '2026-08-11'
+method: probed
+source: https://api.cubbystorage.com/.well-known/
+note: >-
+  Probed every /.well-known/ path across all three Cubby hosts. Two documents are
+  really served — the RFC 8414 OAuth authorization server metadata and the RFC 9728
+  OAuth protected resource metadata — both on the API host, both supporting the
+  hosted MCP server. No security.txt, no OpenID Connect discovery, no api-catalog
+  and no ai-plugin.json anywhere. The marketing host (www.cubbystorage.com) returns
+  a genuine HTML 404 for every /.well-known/ path (10-byte body), so no soft-200
+  false positives were recorded.
+hosts:
+- host: https://api.cubbystorage.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: cubby-oauth-authorization-server.json
+    spec: RFC 8414
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: cubby-oauth-protected-resource.json
+    spec: RFC 9728
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.cubbystorage.com
+  documents:
+  - path: /llms.txt
+    status: 200
+    content_type: text/plain
+    file: ../llms/cubby-llms.txt
+  - path: /robots.txt
+    status: 200
+    note: 'User-agent: * / Allow: / — no AI-crawler directives, no agent-specific rules'
+  - path: /sitemap.xml
+    status: 200
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://app.cubbystorage.com
+  documents:
+  - path: /
+    status: 200
+    note: operator sign-in application; no /.well-known/ discovery surface served
+x-evidence:
+  fetched: '2026-08-11'
+  probes: 18
+  hits: 2

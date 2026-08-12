@@ -1,0 +1,44 @@
+# Cubby
+
+AI-native facility management software for self-storage operators.
+
+Replaces legacy FMS systems with better UX, embedded payments, and a growing integration ecosystem.
+
+Cubby is built for SMB and mid-market self-storage operators in the US.
+
+Primary products:
+- Facility management
+- Tenant communications
+- Embedded payment processing
+- Integration platform
+
+## Product
+
+### Self-Storage FMS
+Full facility management — units, tenants, leases, automations.
+
+### Tenant Communications / Comms AI
+AI-powered tenant messaging and follow-up.
+
+### Payment Processing
+Embedded payments with no per-transaction markup model.
+
+### Integrations
+Native connections to access control, insurance, marketing, and more.
+
+## Case Studies
+
+- American Self Storage
+- Bald Eagle Storage
+- ClearHome
+- Iron Storage
+- Prestige Storage
+- Ready Now Storage
+
+## Blog
+
+- Self-Storage Operations Starter Guide
+- Self-Storage Marketing Starter Guide
+- The Case for Collections & Delinquency Automation
+- Handling PCI-Compliant Payments via Voice AI
+- 2026 CAB Insights

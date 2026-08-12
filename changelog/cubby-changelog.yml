@@ -1,0 +1,147 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#changelog
+name: Cubby Operator API Changelog
+description: >-
+  Cubby maintains a dated, month-grouped changelog inside its public API reference.
+  Entries are written at field and endpoint granularity — each names the exact endpoint
+  and the exact field added, changed or deprecated — which is materially more useful to
+  an integrator than a release-notes blog. 53 entries across 13 months are published,
+  running from December 2024 to August 2026.
+scheme:
+  versioning: path
+  current_version: v1
+  granularity: month
+  cadence: monthly (13 dated months published; every month from September 2025 forward)
+  breaking_change_signalling: >-
+    Breaking changes are announced as deprecations with a named removal month inside the
+    same changelog. Example — the June 2026 entry states that the applicationAmount value
+    for percentage discounts "is deprecated and scheduled for removal in mid-July 2026".
+    There is no separate deprecation policy page and no Sunset/Deprecation response headers
+    are documented.
+  machine_readable_feed: false
+  note: >-
+    The changelog is HTML inside the Slate reference. There is no RSS/Atom feed, no JSON
+    feed, and no per-entry permalink beyond the month anchor.
+window: 2024-12 to 2026-08
+entry_count: 53
+entries:
+- date: '2026-08'
+  version: v1
+  breaking: false
+  additions:
+  - 'Rent Roll Report: lastRentChangeDate field on POST /v1/reports/rent-roll'
+  - 'Rent Roll Report: effectiveRate field (net rent in cents after discounts and waived rent)'
+  changes:
+  - 'Managers Search: the phone filter on POST /v1/managers/search is now normalised to
+    E.164 and matched exactly; a value that is not a full phone number is rejected with 400
+    and partial-number search is no longer supported on this filter'
+  note: >-
+    The managers/search phone change is a behavioural break shipped as a changelog note —
+    a previously-working partial search now returns 400.
+- date: '2026-07'
+  version: v1
+  breaking: false
+  additions:
+  - 'Rent Roll Report: credit field'
+  - 'Checkout: optional enableAutoPay flag on POST /v1/leases/checkout, plus paymentMethodId
+    and autoPayEnabled response fields'
+  - 'Pricing Groups: valuePricingStatus and availableTiers; new POST /v1/pricing-groups/find-unit-for-tier'
+  - 'New endpoint POST /v1/leads/update'
+  - 'Leads Search: origin field and lifecycle timestamps'
+  - 'Leads: coverage / discounts / custom rate'
+  - Communication preferences
+- date: '2026-06'
+  version: v1
+  breaking: false
+  deprecations:
+  - 'applicationAmount for percentage discounts — deprecated, scheduled for removal mid-July 2026'
+  additions:
+  - New endpoint Facility Groups Search
+  - 'Discounts: pricingGroups field'
+  - 'Discounts: applicationPercentage field'
+  - New endpoint Get Upsells
+  - 'Facilities Search: schedules expansion'
+  - 'Facilities Search: timeZone field'
+  - 'Units Search: legacyId field'
+- date: '2026-05'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/reports/merchant-services-disbursements
+  - New endpoint POST /v1/value-pricing-strategies/search
+  - 'Leases, Leads, Customers Search: createdAt / updatedAt timestamps'
+  - 'Search endpoints: updatedAfter / updatedBefore incremental-sync cursor filters'
+  - New endpoint Get Documents Link
+  - 'Documentation: roles and permissions reference added'
+  fixes:
+  - 'Leases Search: activeOnOrAfter / activeOnOrBefore filter fix'
+- date: '2026-04'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/leases/checkout
+  - 'Auctions: leaseConfigurationId field'
+- date: '2026-03'
+  version: v1
+  breaking: false
+  additions:
+  - 'Leases Search: scheduledMoveOut field'
+  - 'Leads Create: facility-level token support'
+- date: '2026-02'
+  version: v1
+  breaking: false
+  additions:
+  - AutoPay Enable / Disable endpoints
+  - 'Leases Search: coverageChange field'
+  - Lease Compliance
+  - New endpoint POST /v1/reports/general-ledger/accrual
+  - 'Ledger Search: paymentTime field'
+  - 'Pricing Groups Change Rates: strikethroughRate field'
+  - 'Facilities Search: additional fields'
+  - 'Units Search: walkthroughOrder field'
+- date: '2026-01'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint Leads Search
+  - New endpoint POST /v1/reports/rent-roll
+  - New endpoint POST /v1/payment-methods/create
+  - New endpoint POST /v1/units/set-rentability
+- date: '2025-12'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/reports/aged-receivables
+  - 'Ledger Search: waive flag'
+  - New endpoint POST /v1/pricing-groups/change-rates
+  - 'Customers Search: companyName field'
+- date: '2025-11'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/leases/change-rents
+  - New endpoints Notes Search / Create
+  - 'General Ledger Cash Report: GL mapping fields'
+- date: '2025-10'
+  version: v1
+  breaking: false
+  additions:
+  - 'Leases Search: pricingGroup expansion'
+- date: '2025-09'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/locks/transfer
+- date: '2024-12'
+  version: v1
+  breaking: false
+  additions:
+  - New endpoint POST /v1/pricing-groups/search
+  - New endpoint POST /v1/payments/search
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200
+  repo: https://github.com/cubbystorage/docs
+  repo_last_push: '2026-08-10T17:04:34Z'

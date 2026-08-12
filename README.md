@@ -42,5 +42,30 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Cubby is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/cubby_stock/
+Cubby is a New York City based software company building an AI-native facility management
+platform for self-storage operators. It replaces legacy FMS systems with facility operations,
+tenant management, revenue management, e-commerce storefronts, embedded payment processing and
+AI-driven tenant communications, and serves 400+ operators across 2,000+ facilities. Founded in
+2022 by Matt Engfer and Adam Fleming; raised a $63M Series A led by Growth Equity at Goldman
+Sachs Alternatives in January 2026.
+
+## API surface
+
+- **Cubby Operator API** — a JSON HTTP API (explicitly not RESTful), ~70 action-oriented POST
+  endpoints across facilities, units, leases, customers, leads, payments, coverage, auctions,
+  locks, messaging and reporting. Base `https://api.cubbystorage.com/v1`.
+- **Cubby Storefront API** — the tenant-facing rental slice powering embedded storefronts.
+- **Cubby MCP Server** — a live, OAuth-protected Model Context Protocol endpoint at
+  `https://api.cubbystorage.com/mcp`, discoverable via RFC 8414 / RFC 9728 metadata.
+- **Storefront web components** — Lit-based embeddable checkout and facility components.
+- **Make.com webhooks** — six lease-lifecycle events.
+- **Analytics data warehouse** — a documented BigQuery `analytics` dataset.
+
+Developer documentation: <https://cubbystorage.github.io/docs/>
+
+## Links
+
+- <https://www.cubbystorage.com/>
+- <https://cubbystorage.github.io/docs/>
+- <https://github.com/cubbystorage>
+- <https://forgeglobal.com/cubby_stock/>

@@ -1,0 +1,92 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#checkout-2
+description: >-
+  Cubby publishes NO client SDK in any public package registry. Searched npm, PyPI,
+  RubyGems, crates.io, Packagist, NuGet, Maven Central and pkg.go.dev for a first-party
+  Cubby client library and found none; the two public repositories in the github.com/cubbystorage
+  organization are the docs site and an empty GitHub Pages placeholder. The only first-party
+  distributable Cubby ships is the storefront web-component bundle, and it is served from the
+  company's own CDN with no registry entry and no version in the URL.
+package_count: 1
+sdk_count: 0
+packages:
+- language: javascript
+  registry: cdn
+  name: cubby-storefront-components
+  url: https://cdn.cubbystorage.com/components/latest
+  install: '<script type="module" src="https://cdn.cubbystorage.com/components/latest" data-api-key="your-storefront-api-key"></script>'
+  official: true
+  version: null
+  published: null
+  note: >-
+    UNPINNED DISTRIBUTION — this is the finding, not a gap in our checking. The documented
+    and only working URL is the literal path /components/latest; /components/1.0.0,
+    /components/v1 and /components/stable all 404, so there is no way for a consumer to pin a
+    version, and no way for anyone to tell which build they are running. The bundle carries no
+    self-reported version string (the semver literals inside it belong to bundled dependencies).
+    The only currency signal available is the object's own CDN metadata: Last-Modified
+    Mon, 10 Aug 2026 09:16:53 GMT, ETag 1c26158c47655046996c52fed580f8b7, 650,813 bytes,
+    Cache-Control public,max-age=600, served from Google Cloud Storage. It is current — modified
+    the day before this probe — but it floats, and the docs explicitly warn that anything not in
+    the documented CSS parts list "may change without notice".
+  registry_metadata_endpoint: null
+  registry_metadata_note: >-
+    CDN distribution has no registry metadata endpoint to query. jsDelivr/unpkg do not carry it
+    because it is not an npm package.
+  distributes:
+  - cubby-checkout
+  - cubby-facility
+  - cubby-facility-info
+  - cubby-portfolio
+  - cubby-search
+  - cubby-contact-form
+  see: components/cubby-components.yml
+registries_searched:
+- registry: npm
+  query: cubbystorage / cubby self-storage
+  result: no first-party package
+- registry: pypi
+  package: cubby
+  result: >-
+    exists but is NOT Cubby's — pypi.org/project/cubby is version 0.2.0 by Jack Reilly, unrelated
+    to cubbystorage.com. Recorded here so a later run does not mistake it for first-party.
+- registry: rubygems
+  result: none found
+- registry: crates.io
+  result: none found
+- registry: packagist
+  result: none found
+- registry: nuget
+  result: none found
+- registry: maven-central
+  result: none found
+- registry: pkg.go.dev
+  result: none found
+- registry: github
+  org: https://github.com/cubbystorage
+  result: >-
+    2 public repos — cubbystorage/docs (the developer documentation site, last pushed
+    2026-08-10) and cubbystorage.github.io (3 KB placeholder, last pushed 2022-10-01). No SDK
+    source, no examples repo, no Postman collection.
+gaps:
+- No API client library in any language for a ~70-operation API.
+- The one shipped artifact cannot be version-pinned by a consumer.
+- No SDKs pointer is emitted in apis.yml because a UI web-component bundle is not an API client
+  library; claiming otherwise would credit an SDK surface Cubby does not have.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://cdn.cubbystorage.com/components/latest
+    http_status: 200
+    content_type: text/javascript
+    bytes: 650813
+    last_modified: 'Mon, 10 Aug 2026 09:16:53 GMT'
+  - url: https://cdn.cubbystorage.com/components/1.0.0
+    http_status: 404
+  - url: https://api.github.com/orgs/cubbystorage/repos
+    http_status: 200
+    result: 2 repos
+  - url: https://registry.npmjs.org/-/v1/search?text=cubbystorage
+    http_status: 200
+    result: 0 first-party matches

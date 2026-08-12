@@ -1,0 +1,55 @@
+generated: '2026-08-11'
+method: probed
+source: https://api.cubbystorage.com/.well-known/oauth-authorization-server
+docs: https://cubbystorage.github.io/docs/api/#roles
+description: >-
+  Cubby's only true OAuth scope surface belongs to its MCP server, and it is a single
+  coarse scope. The REST APIs have no OAuth at all; their authorization axis is a named
+  role stamped on each issued API key, which is recorded here alongside because it is
+  the permission model an integrator actually reasons about.
+oauth:
+  authorization_server: https://api.cubbystorage.com
+  scope_count: 1
+  scopes:
+  - name: mcp
+    description: >-
+      The single scope advertised by both the RFC 8414 authorization server metadata and
+      the RFC 9728 protected resource metadata. Not decomposed by resource or by read/write
+      — a granted MCP token carries the whole server.
+    resource: https://api.cubbystorage.com
+    source: /.well-known/oauth-authorization-server
+  granularity: coarse
+  note: >-
+    A single undifferentiated `mcp` scope means consent for an agent is all-or-nothing.
+    Given the underlying REST surface writes leases, charges cards, starts liens and sends
+    tenant messages, this is the most consequential authorization gap on the profile.
+key_roles:
+  model: role-per-API-key (not OAuth scopes)
+  count: 8
+  values:
+  - name: Manager
+    access: read+write across nearly all resources; read on access codes, discounts, facilities,
+      facility groups, ledgers, organizations, payment methods
+  - name: Search
+  - name: Storefront
+  - name: Report
+  - name: Coverages
+  - name: Access Codes
+  - name: Communication
+  - name: Locks
+  source: https://cubbystorage.github.io/docs/api/#roles
+  note: >-
+    Roles are documented with a per-resource endpoint table in the API reference, added in
+    the May 2026 changelog entry "Documentation: roles and permissions".
+pii:
+  separate_entitlement: true
+  note: PII visibility is an independent flag on the key, orthogonal to the role.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://api.cubbystorage.com/.well-known/oauth-authorization-server
+    http_status: 200
+  - url: https://api.cubbystorage.com/.well-known/oauth-protected-resource
+    http_status: 200
+  - url: https://cubbystorage.github.io/docs/api/
+    http_status: 200

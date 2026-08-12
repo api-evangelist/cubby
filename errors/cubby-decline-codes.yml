@@ -1,0 +1,90 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#reports
+description: >-
+  Cubby embeds payment processing into the platform, so lease checkout and rent collection
+  return transaction outcomes as well as HTTP statuses. Cubby publishes two enumerated
+  transaction-status vocabularies — its own internal status and the raw status passed through
+  from Payabli — in the Merchant Services Disbursements report reference. There is no
+  card-network decline-code reference (no CVV/AVS/issuer reason codes), so an integrator can
+  learn that a charge was declined but not why.
+envelope:
+  field: paymentFailureInfo
+  location: POST /v1/leases/checkout response
+  description: >-
+    "present only when the payment failed; contains the decline reason. It is not used to report
+    card-save or AutoPay problems"
+  siblings:
+  - name: paymentSuccess
+    description: whether the move-in payment succeeded; when false the lease was rolled back
+  - name: leaseId
+    description: null if the payment was declined
+  - name: paymentTransactionId
+  - name: paymentMethodId
+    description: null when the card was not saved
+  - name: autoPayEnabled
+decline_codes:
+- code: DECLINED
+  vocabulary: cubby
+  meaning: Cubby-side transaction status for a declined charge.
+  action: >-
+    Treat the lease as not created — on a declined move-in payment the lease is rolled back
+    while the lead survives. Re-collect payment details and retry checkout.
+- code: DECLINED_BY_PROCESSOR
+  vocabulary: payabli
+  meaning: The payment processor declined the transaction (Payabli-processed accounts only).
+  action: Collect a different payment method; the processor decline is terminal for this attempt.
+- code: DECLINED_BY_TECHNICAL_ERROR
+  vocabulary: payabli
+  meaning: The transaction failed for a technical reason rather than a funding decision.
+  action: >-
+    Retryable in principle, but no idempotency key exists on checkout — retry only after
+    confirming via payments/search that no charge landed.
+- code: ERROR
+  vocabulary: cubby
+  meaning: Cubby-side error status on the transaction.
+  action: Reconcile against POST /v1/payments/search before retrying.
+- code: FAILED
+  vocabulary: both
+  meaning: Terminal failure status, present in both the Cubby and Payabli vocabularies.
+  action: Do not retry the same instrument.
+transaction_statuses:
+  cubby:
+  - NEW
+  - INITIATED
+  - PENDING
+  - APPROVED
+  - DECLINED
+  - ERROR
+  - FAILED
+  - VOIDED
+  - CANCELING
+  - VOIDING
+  payabli:
+  - AUTHORIZED
+  - APPROVED
+  - DECLINED_BY_PROCESSOR
+  - DECLINED_BY_TECHNICAL_ERROR
+  - VOIDED
+  - FAILED
+  - INITIATED
+  note: >-
+    payabliStatus is documented as "(Payabli only)" — accounts on the other processor do not
+    receive it, so the pass-through vocabulary is conditional on the merchant's processor.
+processors:
+- name: Stripe, Inc.
+- name: Payabli (Centavo Inc.)
+  source: https://www.cubbystorage.com/payment-processing-notice
+masked_to_buyers:
+  documented: false
+  note: >-
+    Cubby does not document which decline reasons are surfaced to the renter in the embedded
+    checkout web component versus held for the operator.
+gaps:
+- No card-network decline reason codes (issuer decline, insufficient funds, CVV/AVS mismatch).
+- paymentFailureInfo's own shape is not documented — only that it "contains the decline reason".
+- No decline-recovery or retry-schedule guidance for AutoPay failures.
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200

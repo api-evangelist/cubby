@@ -1,0 +1,111 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/api/#authentication
+docs: https://cubbystorage.github.io/docs/api/#authentication
+description: >-
+  Cubby runs two distinct authentication models on one host. The Operator and Storefront
+  APIs use a long-lived, out-of-band-issued API key presented as an HTTP bearer token,
+  scoped to an Organization and further constrained by one of eight named key roles plus
+  a separate PII entitlement. The MCP server on the same host uses OAuth 2.1 with PKCE and
+  dynamic client registration. There is no self-service credential issuance for the REST
+  surface — keys are obtained by emailing support.
+schemes:
+- id: operator_api_key
+  type: http
+  scheme: bearer
+  in: header
+  header: Authorization
+  format: 'Bearer <api-key>'
+  applies_to:
+  - Cubby Operator API
+  - Cubby Storefront API
+  issuance: >-
+    Out of band. "In order to obtain an API key, please contact support@cubbystorage.com."
+    API access additionally requires an executed Order under the Cubby API Terms of Service,
+    so the credential is commercially gated, not self-service.
+  contact: support@cubbystorage.com
+  rotation: not documented
+  expiry: not documented
+  self_service: false
+  scoping: >-
+    Credentials attach conceptually to the Organization and carry access to all resources
+    (managers, facilities, customers, leases) visible to that Organization.
+  note: >-
+    The storefront web components take the same key as a `data-api-key` attribute on a
+    <script> tag, which places a Storefront-role key in client-side HTML by design. That
+    makes the role separation load-bearing rather than advisory — see roles below.
+- id: mcp_oauth
+  type: oauth2
+  flow: authorizationCode
+  applies_to:
+  - Cubby MCP Server
+  authorization_endpoint: https://api.cubbystorage.com/oauth/authorize
+  token_endpoint: https://api.cubbystorage.com/oauth/token
+  registration_endpoint: https://api.cubbystorage.com/connect/register
+  issuer: https://api.cubbystorage.com
+  grant_types:
+  - authorization_code
+  - refresh_token
+  pkce:
+    required_methods:
+    - S256
+  token_endpoint_auth_methods:
+  - none
+  dynamic_client_registration: true
+  scopes:
+  - mcp
+  discovery:
+  - path: /.well-known/oauth-authorization-server
+    spec: RFC 8414
+    status: 200
+  - path: /.well-known/oauth-protected-resource
+    spec: RFC 9728
+    status: 200
+  method: probed
+roles:
+  model: named key roles, one per issued API key
+  description: >-
+    "API keys are issued with a specific role that determines which endpoints and operations
+    are accessible." The roles reference table in the docs enumerates the endpoints reachable
+    under each role.
+  values:
+  - name: Manager
+    summary: >-
+      Most comprehensive. Read and write across leases, customers, leads, payments, units,
+      coverage, auctions, notes, tasks, pricing groups and reports; read access to access
+      codes, discounts, facilities, facility groups, ledgers, organizations and payment methods.
+  - name: Search
+  - name: Storefront
+  - name: Report
+  - name: Coverages
+  - name: Access Codes
+  - name: Communication
+  - name: Locks
+pii_entitlement:
+  documented: true
+  behaviour: >-
+    PII access is a separate entitlement on the key, not a role. "If your API key does not
+    have access to PII, all PII fields will be skipped in API responses." Fields are silently
+    omitted rather than masked or rejected, so a client must not treat a missing field as a
+    missing value.
+  fields:
+  - customer names
+  - customer addresses
+  - customer phone numbers
+  - customer email addresses
+  - customer date of birth
+  - customer ID numbers
+  - alternative contact names
+  - alternative contact phone numbers
+  - alternative contact email addresses
+  - vehicle license numbers
+  - vehicle states
+gaps:
+- No documented key rotation, expiry or revocation procedure for the Operator API key.
+- No self-service credential issuance; every key requires a support email and a signed Order.
+- No OAuth or OIDC on the REST surface — OAuth exists only for the MCP server.
+- No mTLS, no request signing, no IP allowlisting documented.
+x-evidence:
+  fetched: '2026-08-11'
+  url: https://cubbystorage.github.io/docs/api/
+  http_status: 200

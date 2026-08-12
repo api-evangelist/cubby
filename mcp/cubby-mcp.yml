@@ -1,0 +1,67 @@
+generated: '2026-08-11'
+method: probed
+status: published
+source: https://api.cubbystorage.com/mcp
+name: Cubby MCP Server
+description: >-
+  Cubby operates a hosted, remote Model Context Protocol server on its production API
+  host. The endpoint is live and OAuth-protected. An anonymous JSON-RPC tools/list
+  call returns HTTP 401 with a WWW-Authenticate Bearer challenge carrying
+  resource_metadata="https://api.cubbystorage.com/.well-known/oauth-protected-resource",
+  which is the RFC 9728 handshake the MCP authorization spec prescribes — so the
+  server is correctly wired for agent discovery even though its tool schemas are gated.
+transport:
+  url: https://api.cubbystorage.com/mcp
+  protocol: Streamable HTTP (JSON-RPC 2.0)
+  sse_endpoint: null
+  note: >-
+    /sse, /mcp/sse, /v1/mcp, /api/mcp, /message and /messages all return 404. /mcp is
+    the only MCP path served.
+authorization:
+  required: true
+  scheme: OAuth 2.1 (authorization code + PKCE)
+  challenge: 'WWW-Authenticate: Bearer resource_metadata="https://api.cubbystorage.com/.well-known/oauth-protected-resource"'
+  authorization_server: https://api.cubbystorage.com
+  authorization_endpoint: https://api.cubbystorage.com/oauth/authorize
+  token_endpoint: https://api.cubbystorage.com/oauth/token
+  registration_endpoint: https://api.cubbystorage.com/connect/register
+  dynamic_client_registration: true
+  grant_types:
+  - authorization_code
+  - refresh_token
+  code_challenge_methods:
+  - S256
+  token_endpoint_auth_methods:
+  - none
+  bearer_methods:
+  - header
+  scopes:
+  - mcp
+tools:
+  count: null
+  discovered: false
+  note: >-
+    NOT FABRICATED. tools/list is authentication-gated, so the real tool set and its
+    inputSchema blocks could not be read anonymously. Cubby publishes no tool list in
+    its llms.txt or its developer docs either — the MCP server is not mentioned
+    anywhere in the public documentation, only discoverable by probing the API host.
+    Recording the tool surface requires an authenticated introspection pass with an
+    operator OAuth client.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://api.cubbystorage.com/mcp
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    response: '{"error":"authentication_required"}'
+    www_authenticate: 'Bearer resource_metadata="https://api.cubbystorage.com/.well-known/oauth-protected-resource"'
+  - url: https://api.cubbystorage.com/.well-known/oauth-protected-resource
+    http_status: 200
+    content_type: application/json
+  - url: https://api.cubbystorage.com/.well-known/oauth-authorization-server
+    http_status: 200
+    content_type: application/json
+  - url: https://api.cubbystorage.com/sse
+    method: POST
+    http_status: 404

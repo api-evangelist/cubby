@@ -1,0 +1,37 @@
+generated: '2026-08-11'
+method: searched
+source: https://www.cubbystorage.com/
+plan_count: 0
+pricing_page: null
+note: >-
+  CUBBY PUBLISHES NO PRICING. There is no /pricing page — the sitemap lists 79 URLs and none of
+  them is a pricing or plans page — and the site's only conversion path is "Book a demo"
+  (/demo). API access is priced separately and privately: the API Terms of Service state that a
+  developer "shall pay the Fees set forth in the applicable Order", so both the platform and the
+  API are quote-only. No published tiers, no included quota, no overage schedule, no per-unit or
+  per-facility rate.
+commercial_model:
+  self_service_signup: false
+  free_tier: false
+  trial: not published
+  sales_gate: 'Book a demo (https://www.cubbystorage.com/demo)'
+  api_access:
+    self_service: false
+    requires: an executed Order under the Cubby API Terms of Service, plus an API key issued by
+      support@cubbystorage.com
+    source: https://www.cubbystorage.com/api-terms-of-service
+  payments_positioning:
+    claim: >-
+      Cubby markets "embedded payment processing with no per-transaction markup model" in its
+      llms.txt — a pricing claim about the payments product, but no rate card accompanies it.
+    source: https://www.cubbystorage.com/llms.txt
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://www.cubbystorage.com/sitemap.xml
+    http_status: 200
+    result: 79 URLs, no /pricing or /plans
+  - url: https://www.cubbystorage.com/demo
+    http_status: 200
+  - url: https://www.cubbystorage.com/api-terms-of-service
+    http_status: 200

@@ -1,0 +1,122 @@
+generated: '2026-08-11'
+method: searched
+source: https://cubbystorage.github.io/docs/storefront-css/
+description: >-
+  Cubby ships an embeddable client-side component library — the Cubby Storefront components —
+  built as Web Components with Lit and distributed as a single ES module from the company CDN.
+  These are the rental storefront: facility listing, unit search, pricing cards and a complete
+  embedded checkout that takes payment. They are theming-documented at a genuinely detailed
+  level (a full CSS Shadow Parts reference plus 19 global CSS custom properties), which is a
+  stronger developer surface than most of the REST API carries.
+loader:
+  url: https://cdn.cubbystorage.com/components/latest
+  tag: '<script type="module" src="https://cdn.cubbystorage.com/components/latest" data-api-key="your-storefront-api-key"></script>'
+  module_type: ES module
+  framework: Lit
+  encapsulation: shadow DOM
+  auth:
+    mechanism: data-api-key attribute on the script tag
+    key: >-
+      "This is the same API key used for the Storefront API endpoints above." A Storefront-role
+      key is therefore published in page HTML by design — the role separation described in
+      authentication/cubby-authentication.yml is what contains the blast radius.
+  versioning: unpinned; see packages/cubby-packages.yml
+families:
+- family: Storefront
+  components:
+  - tag: cubby-checkout
+    description: >-
+      Complete embeddable checkout flow for a storefront. Placed anywhere in page HTML.
+    attributes:
+    - name: pricing-groups
+      type: string
+      required: true
+      description: >-
+        The ID of the pricing group to display, as returned by POST /v1/storefront/pricing-groups/search.
+        "Only one pricing group is supported at this time."
+    - name: customer-name
+      type: string
+      required: false
+      description: pre-populates the customer name field
+    - name: customer-email
+      type: string
+      required: false
+      description: pre-populates the customer email field
+    - name: customer-phone
+      type: string
+      required: false
+      description: pre-populates the customer phone field
+  - tag: cubby-facility
+    description: Facility view rendering pricing group cards and tabs; the primary storefront surface.
+  - tag: cubby-facility-info
+    description: Facility information panel.
+  - tag: cubby-portfolio
+    description: Multi-facility portfolio view.
+  - tag: cubby-search
+    description: Unit / facility search with result list.
+  - tag: cubby-contact-form
+    description: Lead capture contact form.
+theming:
+  mechanism: CSS Shadow Parts
+  description: >-
+    "Parts are the only supported way to style the internals of these components. Anything not
+    listed here is an implementation detail and may change without notice."
+  selector: '<tag-name>::part(<part-name>)'
+  pseudo_class_support: true
+  forwarded_parts:
+    supported: true
+    mechanism: exportparts
+    description: >-
+      Inner components' parts are forwarded up to the outer element, so pricing group card parts
+      and pricing tier parts are styled on the top-level tag.
+  css_variables:
+    count: 19
+    prefix: --cubby-
+    fallback_pattern: 'var(--cubby-primary-color, <default>)'
+    precedence: a value set by the host page wins over the theme configured in the storefront builder
+    groups:
+      colors:
+      - --cubby-primary-color
+      - --cubby-on-primary-color
+      - --cubby-secondary-color
+      - --cubby-on-secondary-color
+      - --cubby-surface-color
+      - --cubby-on-surface-color
+      - --cubby-success-color
+      - --cubby-error-color
+      - --cubby-shadow-color
+      - --cubby-divider-color
+      - --cubby-outline-color
+      border_and_shape:
+      - --cubby-radius
+      - --cubby-shadow
+      - --cubby-divider-width
+      - --cubby-outline-width
+      - --cubby-spacing
+      - --cubby-density
+      typography:
+      - --cubby-body-font
+      - --cubby-heading-font
+  documented_part_sets:
+  - Facility
+  - Facility Info
+  - Portfolio
+  - Checkout
+  - Search
+  - Contact Form
+  - Pricing group card parts (forwarded)
+  - Pricing tier parts (forwarded)
+internal_components:
+  note: >-
+    The shipped bundle also registers ~24 cubby-internal-* elements (button, input, select,
+    carousel, payment-form, pricing-dialog, reservation-dialog, waitlist-dialog and so on).
+    These are implementation detail, are not documented, and are explicitly out of the
+    supported theming contract. Recorded for completeness, not as public surface.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+  - url: https://cubbystorage.github.io/docs/storefront-css/
+    http_status: 200
+  - url: https://cdn.cubbystorage.com/components/latest
+    http_status: 200
+    content_type: text/javascript
