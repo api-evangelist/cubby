@@ -11,6 +11,17 @@ description: 'Cubby is a New York City based software company building an AI-nat
   Model Context Protocol server. The company was founded in 2022 by Matt Engfer and
   Adam Fleming and raised a $63M Series A led by Growth Equity at Goldman Sachs Alternatives
   in January 2026.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.cubbystorage.com/og-logo.png
 url: https://raw.githubusercontent.com/api-evangelist/cubby/refs/heads/main/apis.yml
 x-type: company
