@@ -49,7 +49,7 @@ tags:
 - Self Storage
 - Property Management
 - Facility Management
-- Real-Estate
+- Real Estate
 - Payments
 - Software-as-a-Service
 - Artificial Intelligence
@@ -66,6 +66,7 @@ tags_raw:
 - Artificial Intelligence
 - Revenue Management
 - E-Commerce
+- Real-Estate
 apis:
 - name: Cubby Operator API
   description: 'The Cubby Operator API is a JSON HTTP API — explicitly not RESTful
