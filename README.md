@@ -64,30 +64,126 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Cubby is a New York City based software company building an AI-native facility management
-platform for self-storage operators. It replaces legacy FMS systems with facility operations,
-tenant management, revenue management, e-commerce storefronts, embedded payment processing and
-AI-driven tenant communications, and serves 400+ operators across 2,000+ facilities. Founded in
-2022 by Matt Engfer and Adam Fleming; raised a $63M Series A led by Growth Equity at Goldman
-Sachs Alternatives in January 2026.
+Cubby is a New York City based software company building an AI-native facility management platform for self-storage operators, replacing legacy FMS systems with facility operations, tenant management, revenue management, e-commerce storefronts, embedded payment processing and AI-driven tenant communications. Cubby publishes a public developer documentation site covering a JSON HTTP Operator API of roughly 70 action-oriented endpoints across facilities, units, leases, customers, leads, payments, coverage, auctions and reporting, a BigQuery analytics data warehouse, Make.com outbound webhooks, embeddable Lit storefront web components, and an OAuth-protected Model Context Protocol server. The company was founded in 2022 by Matt Engfer and Adam Fleming and raised a $63M Series A led by Growth Equity at Goldman Sachs Alternatives in January 2026.
 
-## API surface
+**Areas:** Company · Self Storage · Property Management · Facility Management · Real Estate · Payments · Software-as-a-Service · Artificial Intelligence · Revenue Management · E-Commerce
 
-- **Cubby Operator API** — a JSON HTTP API (explicitly not RESTful), ~70 action-oriented POST
-  endpoints across facilities, units, leases, customers, leads, payments, coverage, auctions,
-  locks, messaging and reporting. Base `https://api.cubbystorage.com/v1`.
-- **Cubby Storefront API** — the tenant-facing rental slice powering embedded storefronts.
-- **Cubby MCP Server** — a live, OAuth-protected Model Context Protocol endpoint at
-  `https://api.cubbystorage.com/mcp`, discoverable via RFC 8414 / RFC 9728 metadata.
-- **Storefront web components** — Lit-based embeddable checkout and facility components.
-- **Make.com webhooks** — six lease-lifecycle events.
-- **Analytics data warehouse** — a documented BigQuery `analytics` dataset.
+## Cubby on APIs.io
 
-Developer documentation: <https://cubbystorage.github.io/docs/>
+Everything profiled for Cubby is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/cubby/](https://apis.io/providers/cubby/)** — or go straight to one of the APIs or properties below.
 
-## Links
+### APIs (3)
 
-- <https://www.cubbystorage.com/>
-- <https://cubbystorage.github.io/docs/>
-- <https://github.com/cubbystorage>
-- <https://forgeglobal.com/cubby_stock/>
+- [Cubby Operator API](https://apis.io/apis/cubby/cubby-operator-api/) — The Cubby Operator API is a JSON HTTP API — explicitly not RESTful — oriented around actions performed on system entities rather than transfer of state.…
+- [Cubby Storefront API](https://apis.io/apis/cubby/cubby-storefront-api/) — The Cubby Storefront API is the public, unauthenticated-tenant-facing slice of the Cubby platform used to power online rental storefronts — facility search…
+- [Cubby MCP Server](https://apis.io/apis/cubby/cubby-mcp-server/) — Cubby operates a hosted Model Context Protocol server at api.cubbystorage.com/mcp. The endpoint is live and OAuth-protected: an unauthenticated JSON-RPC…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Cubby Webhooks](https://apis.io/asyncapis/cubby/cubby-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Cubby MCP Server](https://apis.io/servers/cubby/cubby-mcp-server/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Cubby Authentication](https://apis.io/security/cubby/cubby-authentication/)
+- [Cubby Domain Security](https://apis.io/security/cubby/cubby-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Cubby Scopes](https://apis.io/scopes/cubby/cubby-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Cubby Plans Pricing](https://apis.io/plans/cubby/cubby-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Cubby Rate Limits](https://apis.io/rate-limits/cubby/cubby-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.cubbystorage.com/)
+- [Documentation](https://cubbystorage.github.io/docs/)
+- [API reference](https://cubbystorage.github.io/docs/api/)
+- [Sign up](https://app.cubbystorage.com/signin)
+- [Support](https://help.cubbystorage.com/en/)
+- [Blog](https://www.cubbystorage.com/blog)
+- [Terms of service](https://www.cubbystorage.com/api-terms-of-service)
+- [Privacy policy](https://www.cubbystorage.com/privacy-policy)
+- [GitHub](https://github.com/cubbystorage)
+
+## API Evangelist rating
+
+**Kin Score 40.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 45.3 |
+| Contract governance | 18.2 |
+| Operational transparency | 34.2 |
+| Developer ergonomics | 45.2 |
+| Access clarity | 21.1 |
+
+**Agent readiness 51.3** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 29.2** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/cubby/](https://apis.io/providers/cubby/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Cubby: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/cubby/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
